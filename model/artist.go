@@ -13,4 +13,7 @@ type Artist struct {
 
 	ConcertDatesUrl string `json:"concertDates"`
 	//ConcertDates []Date
+
+	RelationsUrl string `json:"relations"`
+	//Relations []Relation
 }
