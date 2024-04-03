@@ -2,29 +2,36 @@ package testmodel
 
 import (
 	"encoding/json"
-	"fmt"
 	"groupietracker/model"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 )
 
-func Dates2(id int) *model.Dates {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://groupietrackers.herokuapp.com/api/dates"+"/"+strconv.Itoa(id), nil)
+const artistsUrl string = "https://groupietrackers.herokuapp.com/api/artists"
+
+var client = &http.Client{}
+
+func GGETartiste2(id int) *model.Artist {
+	artist := &model.Artist{}
+	err := get(artistsUrl+"/"+strconv.Itoa(id), &artist)
 	if err != nil {
-		fmt.Print(err.Error())
+		return nil
 	}
-	resp, err := client.Do(req)
+	return artist
+
+}
+
+func get2(url string, target interface{}) error {
+	r, err := client.Get(url)
 	if err != nil {
-		fmt.Print(err.Error())
+		return err
 	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	defer r.Body.Close()
+	err = json.NewDecoder(r.Body).Decode(target)
+
 	if err != nil {
-		fmt.Print(err.Error())
+		return err
 	}
-	var responseObject model.Dates
-	json.Unmarshal(bodyBytes, &responseObject)
-	return &responseObject
+
+	return nil
 }
